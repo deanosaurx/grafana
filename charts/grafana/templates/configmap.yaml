@@ -13,15 +13,17 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 data:
-  datasources:
+  {{- with .Values.plugins }}
+  plugins: {{ join "," . }}
+  {{- end }}
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
     - name: Prometheus
       type: prometheus
       url: http://prometheus-server.prometheus.svc.cluster.local
       access: proxy
       isDefault: true
-  {{- with .Values.plugins }}
-  plugins: {{ join "," . }}
-  {{- end }}
   grafana.ini: |
   {{- range $elem, $elemVal := index .Values "grafana.ini" }}
     {{- if not (kindIs "map" $elemVal) }}
